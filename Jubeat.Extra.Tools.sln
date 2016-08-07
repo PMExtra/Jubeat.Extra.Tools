@@ -12,6 +12,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Jubeat.Extra.Memo2Eve", "src\Jubeat.Extra.Memo2Eve\Jubeat.Extra.Memo2Eve.xproj", "{6AC86475-FA22-42E6-89C2-D28091C72ADB}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Jubeat.Extra.Model", "src\Jubeat.Extra.Model\Jubeat.Extra.Model.xproj", "{1BEC8A8A-9A8F-4A63-8F56-E7FCDACF371A}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Jubeat.Extra.IO", "src\Jubeat.Extra.IO\Jubeat.Extra.IO.xproj", "{D64885C2-7C40-4F93-AB0C-CB17B656963A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8DEA8E99-6E02-4828-BCF2-A91C25A58297}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Jubeat.Extra.IO.Test", "Jubeat.Extra.IO.Test\Jubeat.Extra.IO.Test.xproj", "{A9D78112-539B-4B84-83DA-1A01329C485C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,11 +30,26 @@ Global
 		{6AC86475-FA22-42E6-89C2-D28091C72ADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AC86475-FA22-42E6-89C2-D28091C72ADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AC86475-FA22-42E6-89C2-D28091C72ADB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BEC8A8A-9A8F-4A63-8F56-E7FCDACF371A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BEC8A8A-9A8F-4A63-8F56-E7FCDACF371A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BEC8A8A-9A8F-4A63-8F56-E7FCDACF371A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BEC8A8A-9A8F-4A63-8F56-E7FCDACF371A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D64885C2-7C40-4F93-AB0C-CB17B656963A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D64885C2-7C40-4F93-AB0C-CB17B656963A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D64885C2-7C40-4F93-AB0C-CB17B656963A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D64885C2-7C40-4F93-AB0C-CB17B656963A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9D78112-539B-4B84-83DA-1A01329C485C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9D78112-539B-4B84-83DA-1A01329C485C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9D78112-539B-4B84-83DA-1A01329C485C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9D78112-539B-4B84-83DA-1A01329C485C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6AC86475-FA22-42E6-89C2-D28091C72ADB} = {05AFB9C4-8B3F-4291-B30D-C226B3C9E59C}
+		{1BEC8A8A-9A8F-4A63-8F56-E7FCDACF371A} = {05AFB9C4-8B3F-4291-B30D-C226B3C9E59C}
+		{D64885C2-7C40-4F93-AB0C-CB17B656963A} = {05AFB9C4-8B3F-4291-B30D-C226B3C9E59C}
+		{A9D78112-539B-4B84-83DA-1A01329C485C} = {8DEA8E99-6E02-4828-BCF2-A91C25A58297}
 	EndGlobalSection
 EndGlobal
