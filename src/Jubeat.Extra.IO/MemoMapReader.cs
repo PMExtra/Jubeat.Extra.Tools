@@ -10,8 +10,8 @@ namespace Jubeat.Extra.IO
 {
     public static class MemoMapReader
     {
-        private static readonly Regex NumberRegex = new Regex(pattern: @"^\d+$");
-        private static readonly Regex MemoLineRegex = new Regex(pattern: @"^(.{4})[ \\t]*(.+)?$");
+        private static readonly Regex NumberRegex = new Regex(@"^\d+$");
+        private static readonly Regex MemoLineRegex = new Regex(@"^(.{4})[ \\t]*(.+)?$");
 
         public static async Task<MemoMap> ReadMemoMapAsync(this StreamReader sr)
         {
@@ -23,7 +23,7 @@ namespace Jubeat.Extra.IO
 
             while (!sr.EndOfStream)
             {
-                var line = sr.ReadLine();
+                var line = await sr.ReadLineAsync();
                 line = line.Trim();
 
                 if (line.Length == 0)
@@ -32,7 +32,7 @@ namespace Jubeat.Extra.IO
                     continue;
                 }
 
-                if (NumberRegex.IsMatch(input: line))
+                if (NumberRegex.IsMatch(line))
                 {
                     measure = new MemoMeasure
                     {
@@ -40,11 +40,11 @@ namespace Jubeat.Extra.IO
                         Beats = new List<MemoBeat>()
                     };
 
-                    map.Measures.Add(item: measure);
+                    map.Measures.Add(measure);
 
                     newPart = true;
 
-                   continue;
+                    continue;
                 }
 
                 if (newPart)
@@ -52,47 +52,47 @@ namespace Jubeat.Extra.IO
                     part = new MemoMeasurePart();
                     if (measure == null)
                     {
-                        Console.WriteLine(value: "[Error] Measure start number not found.");
+                        Console.WriteLine("[Error] Measure start number not found.");
                         return null;
                     }
-                    measure.Parts.Add(item: part);
+                    measure.Parts.Add(part);
                     newPart = false;
                 }
 
-                var memoLine = MemoLineRegex.Match(input: line);
+                var memoLine = MemoLineRegex.Match(line);
                 if (memoLine.Success)
                 {
-                    var left = memoLine.Groups[groupnum: 1].Value;
-                    var right = memoLine.Groups[groupnum: 2].Success ? memoLine.Groups[groupnum: 2].Value : null;
+                    var left = memoLine.Groups[1].Value;
+                    var right = memoLine.Groups[2].Success ? memoLine.Groups[2].Value : null;
 
-                    part.AddButtons(text: left);
+                    part.AddButtons(left);
 
                     if (right != null)
                     {
-                        var beat = MemoBeat.Parse(text: right);
+                        var beat = MemoBeat.Parse(right);
 
                         if (beat != null)
                         {
                             if (measure.Beats.Count == 4)
                             {
-                                Console.WriteLine(value: "[Info] Detected more than 4 beats in measure, merge operation is triggered.");
-                                measure.Beats.Last().Merge(second: beat);
+                                Console.WriteLine("[Info] Detected more than 4 beats in measure, merge operation is triggered.");
+                                measure.Beats.Last().Merge(beat);
                             }
                             else
                             {
-                                measure.Beats.Add(item: beat);
+                                measure.Beats.Add(beat);
                             }
                         }
                         else
                         {
-                            Console.WriteLine(value: $"[Warning] Unrecognized right part: {right}.");
+                            Console.WriteLine($"[Warning] Unrecognized right part: {right}.");
                         }
                     }
-                    
+
                     continue;
                 }
 
-                Console.WriteLine(value: $"[Warning] Unrecognized data: {line}.");
+                Console.WriteLine($"[Warning] Unrecognized data: {line}.");
             }
 
             return map;

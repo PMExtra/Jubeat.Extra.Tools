@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,7 +8,7 @@ namespace Jubeat.Extra.Models.Maps.Memo
 {
     public class MemoBeat
     {
-        private static readonly Regex BeatRegex = new Regex(pattern: @"^\|(\(\d+\))?(.+)\|$");
+        private static readonly Regex BeatRegex = new Regex(@"^\|(\(\d+\))?(.+)\|$");
 
         public int? Bpm { get; set; }
 
@@ -17,40 +16,40 @@ namespace Jubeat.Extra.Models.Maps.Memo
 
         public static MemoBeat Parse(string text)
         {
-            var rightMatch = BeatRegex.Match(input: text);
+            var rightMatch = BeatRegex.Match(text);
             if (!rightMatch.Success)
             {
                 return null;
             }
             var beat = new MemoBeat
             {
-                Hits = rightMatch.Groups[groupnum: 2].Value.SelectMany(c =>
+                Hits = rightMatch.Groups[2].Value.SelectMany(c =>
                 {
-                    var index = NumberCharacters.IndexOf(value: c) + 1;
+                    var index = NumberCharacters.IndexOf(c) + 1;
                     if (index > 0)
                     {
                         return new[] { index, 0 };
                     }
-                    index = HalfNumberCharacters.IndexOf(value: c) + 1;
+                    index = HalfNumberCharacters.IndexOf(c) + 1;
                     if (index > 0)
                     {
                         return new[] { index };
                     }
-                    if (HalfRestCharacters.Contains(value: c))
+                    if (HalfRestCharacters.Contains(c))
                     {
                         return new[] { 0 };
                     }
-                    if (RestCharacters.Contains(value: c))
+                    if (RestCharacters.Contains(c))
                     {
                         return new[] { 0, 0 };
                     }
-                    Console.WriteLine(value: $"[Warning] Unrecognized beats part: {text}, sign: {c}.");
+                    Console.WriteLine($"[Warning] Unrecognized beats part: {text}, sign: {c}.");
                     return new[] { 0, 0 };
                 }).ToArray()
             };
-            if (rightMatch.Groups[groupnum: 1].Success)
+            if (rightMatch.Groups[1].Success)
             {
-                beat.Bpm = int.Parse(s: rightMatch.Groups[groupnum: 1].Value.Trim('(', ')'));
+                beat.Bpm = int.Parse(rightMatch.Groups[1].Value.Trim('(', ')'));
             }
 
             return beat;
@@ -58,19 +57,19 @@ namespace Jubeat.Extra.Models.Maps.Memo
 
         public void Merge(MemoBeat second)
         {
-            Hits = Hits.Concat(second: second.Hits).ToArray();
+            Hits = Hits.Concat(second.Hits).ToArray();
         }
 
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: '|');
+            sb.Append('|');
             if (Bpm != null)
             {
-                sb.Append(value: $"({Bpm})");
+                sb.Append($"({Bpm})");
             }
 
-            for (var i = 0; i < Hits?.Length; )
+            for (var i = 0; i < Hits?.Length; ++i)
             {
                 var hit = Hits[i];
                 int? next = null;
@@ -80,15 +79,19 @@ namespace Jubeat.Extra.Models.Maps.Memo
                 }
                 if (hit > 0)
                 {
-                    sb.Append(value: next > 0 ? HalfNumberCharacters[index: hit - 1] : NumberCharacters[index: hit - 1]);
+                    sb.Append(next > 0 ? HalfNumberCharacters[hit - 1] : NumberCharacters[hit - 1]);
                 }
                 else
                 {
-                    sb.Append(value: next > 0 ? HalfRestCharacters.First() : RestCharacters.First());
+                    sb.Append(next > 0 ? HalfRestCharacters.First() : RestCharacters.First());
                 }
-                i += next > 0 ? 1 : 2;
+
+                if (next <= 0)
+                {
+                    ++i;
+                }
             }
-            sb.Append(value: '|');
+            sb.Append('|');
             return sb.ToString();
         }
     }

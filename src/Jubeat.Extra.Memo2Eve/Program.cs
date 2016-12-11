@@ -11,7 +11,7 @@ namespace Jubeat.Extra.Memo2Eve
         {
             Task.Run(async () =>
             {
-                using (var sr = new StreamReader(stream: new FileStream(path: @"D:\memo.txt", mode: FileMode.Open), encoding: Encoding.UTF8))
+                using (var sr = new StreamReader(new FileStream(@"D:\memo.txt", FileMode.Open), Encoding.UTF8))
                 {
                     var memo = await sr.ReadMemoMapAsync();
                 }

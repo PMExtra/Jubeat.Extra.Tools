@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using static Jubeat.Extra.Models.Maps.Memo.MemoMap;
 
 namespace Jubeat.Extra.Models.Maps.Memo
@@ -22,38 +21,38 @@ namespace Jubeat.Extra.Models.Maps.Memo
                 {
                     Buttons[i] = text.ToCharArray().Select(c =>
                     {
-                        var index = NumberCharacters.IndexOf(value: c) + 1;
+                        var index = NumberCharacters.IndexOf(c) + 1;
                         if (index > 0)
                         {
                             return index;
                         }
-                        if (LeftCharacters.Contains(value: c))
+                        if (LeftCharacters.Contains(c))
                         {
                             return -1;
                         }
-                        if (UpCharacters.Contains(value: c))
+                        if (UpCharacters.Contains(c))
                         {
                             return -2;
                         }
-                        if (RightCharacters.Contains(value: c))
+                        if (RightCharacters.Contains(c))
                         {
                             return -3;
                         }
-                        if (DownCharacters.Contains(value: c))
+                        if (DownCharacters.Contains(c))
                         {
                             return -4;
                         }
-                        if (EmptyCharacters.Contains(value: c))
+                        if (EmptyCharacters.Contains(c))
                         {
                             return 0;
                         }
-                        Console.WriteLine(value: $"[Warning] Unrecognized buttons part: {text}.");
+                        Console.WriteLine($"[Warning] Unrecognized buttons part: {text}.");
                         return -255;
                     }).ToArray();
                     break;
                 }
             }
-            Console.WriteLine(value: "[Warning] Too many buttons, the excess will be ignored.");
+            Console.WriteLine("[Warning] Too many buttons, the excess will be ignored.");
         }
 
         public override string ToString()
@@ -66,7 +65,7 @@ namespace Jubeat.Extra.Models.Maps.Memo
                 {
                     if (b > 0)
                     {
-                        return NumberCharacters[index: b - 1];
+                        return NumberCharacters[b - 1];
                     }
                     switch (b)
                     {
@@ -86,28 +85,28 @@ namespace Jubeat.Extra.Models.Maps.Memo
                             return DownCharacters.First();
 
                         default:
-                            Console.WriteLine(value: $"[Warning] Detect an unrecognized data: {b}.");
+                            Console.WriteLine($"[Warning] Detect an unrecognized data: {b}.");
                             return EmptyCharacters.First();
                     }
                 }).ToArray();
 
                 if (output[i] == null)
                 {
-                    Console.WriteLine(value: "[Warning] Detect a broken butoons data.");
+                    Console.WriteLine("[Warning] Detect a broken butoons data.");
                     return "";
                 }
             }
 
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (var j = 0; j < 4; j++)
                 {
                     switch (Buttons[i][j])
                     {
                         case -1:
                             for (var k = j - 1; k >= 0; k--)
                             {
-                                if (EmptyCharacters.Contains(value: output[i][k]))
+                                if (EmptyCharacters.Contains(output[i][k]))
                                 {
                                     output[i][k] = HorizontalCharacters.First();
                                 }
@@ -121,7 +120,7 @@ namespace Jubeat.Extra.Models.Maps.Memo
                         case -2:
                             for (var k = i - 1; k >= 0; k--)
                             {
-                                if (EmptyCharacters.Contains(value: output[k][j]))
+                                if (EmptyCharacters.Contains(output[k][j]))
                                 {
                                     output[k][j] = VerticalCharacters.First();
                                 }
@@ -135,7 +134,7 @@ namespace Jubeat.Extra.Models.Maps.Memo
                         case -3:
                             for (var k = j + 1; k < 4; k++)
                             {
-                                if (EmptyCharacters.Contains(value: output[i][k]))
+                                if (EmptyCharacters.Contains(output[i][k]))
                                 {
                                     output[i][k] = VerticalCharacters.First();
                                 }
@@ -149,7 +148,7 @@ namespace Jubeat.Extra.Models.Maps.Memo
                         case -4:
                             for (var k = i + 1; k < 4; k++)
                             {
-                                if (EmptyCharacters.Contains(value: output[k][j]))
+                                if (EmptyCharacters.Contains(output[k][j]))
                                 {
                                     output[k][j] = VerticalCharacters.First();
                                 }
@@ -163,7 +162,7 @@ namespace Jubeat.Extra.Models.Maps.Memo
                 }
             }
 
-            return string.Join(separator: "\n", values: output.Select(l => string.Concat(values: l)));
+            return string.Join("\n", output.Select(l => string.Concat(l)));
         }
     }
 }

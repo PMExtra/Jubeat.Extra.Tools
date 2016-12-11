@@ -11,8 +11,8 @@ namespace Jubeat.Extra.IO.Test
         [Fact]
         public void MemoBeatTest()
         {
-            Assert.NotNull(@object: MemoBeat.Parse(text: "|(197)－－①－②－|"));
-            Assert.Null(@object: MemoBeat.Parse(text: "口①②口"));
+            Assert.NotNull(MemoBeat.Parse("|(197)－－①－②－|"));
+            Assert.Null(MemoBeat.Parse("口①②口"));
         }
 
         [Fact]
@@ -20,10 +20,10 @@ namespace Jubeat.Extra.IO.Test
         {
             Task.Run(async () =>
             {
-                using (var sr = new StreamReader(stream: new FileStream(path: @"D:\memo2.txt", mode: FileMode.Open), encoding: Encoding.UTF8))
+                using (var sr = new StreamReader(new FileStream(@"D:\memo2.txt", FileMode.Open), Encoding.UTF8))
                 {
                     var memo = await sr.ReadMemoMapAsync();
-                    Assert.NotNull(@object: memo);
+                    Assert.NotNull(memo);
                 }
             });
         }
