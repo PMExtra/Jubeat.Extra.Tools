@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Jubeat.Extra.Logging": "1.0.0-*",
+    "Common.Logging": "3.4.0-Beta2",
     "NETStandard.Library": "1.6.1"
   },
 
