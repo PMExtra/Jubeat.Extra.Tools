@@ -4,20 +4,16 @@ namespace Jubeat.Extra.Models.Maps.Memo
 {
     public class MemoMap
     {
-        internal const string EmptyCharacters = @"□口_－—\-―\|｜";
-        internal const string RestCharacters = @"—－";
-        internal const string HalfRestCharacters = @"\-";
-        internal const string LeftCharacters = @"＜\<";
-        internal const string UpCharacters = @"∧\^";
-        internal const string RightCharacters = @"＞\>";
-        internal const string DownCharacters = @"∨v";
-        internal const string HorizontalCharacters = @"―_－\-";
-        internal const string VerticalCharacters = @"｜\|";
-        internal const string NumberCharacters = @"①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿";
-        internal const string HalfNumberCharacters = @"123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        public string Title { get; set; }
 
-        public int Bpm { get; set; }
+        public string Author { get; set; }
 
-        public IList<MemoMeasure> Measures { get; set; }
+        public int BpmMin { get; set; }
+
+        public int BpmMax { get; set; }
+
+        public int Notes { get; set; }
+
+        public List<MemoMeasure> Measures { get; } = new List<MemoMeasure>();
     }
 }

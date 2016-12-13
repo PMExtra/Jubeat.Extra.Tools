@@ -4,8 +4,8 @@ namespace Jubeat.Extra.Models.Maps.Memo
 {
     public class MemoMeasure
     {
-        public IList<MemoMeasurePart> Parts { get; set; }
+        public IList<MemoMeasurePart> Parts { get; } = new List<MemoMeasurePart>();
 
-        public IList<MemoBeat> Beats { get; set; }
+        public IList<MemoBeat> Beats { get; } = new List<MemoBeat>();
     }
 }
