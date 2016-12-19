@@ -27,7 +27,7 @@ namespace Jubeat.Extra.Models.Maps.Eve
 
         public override string ToString()
         {
-            return string.Join(",", IEveNodeHelper.FixWidth(Timestamp, NodeName, ZipParam));
+            return string.Join(",", EveNodeHelper.FixWidth(Timestamp, NodeName, ZipParam));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Jubeat.Extra.Models.Maps.Eve
 
         public override string ToString()
         {
-            return string.Join(",", IEveNodeHelper.FixWidth(Timestamp, NodeName, 0));
+            return string.Join(",", EveNodeHelper.FixWidth(Timestamp, NodeName, 0));
         }
     }
 }

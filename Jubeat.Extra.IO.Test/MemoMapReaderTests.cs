@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Text;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Jubeat.Extra.Models.Maps.Memo;
 using Xunit;
@@ -9,23 +9,44 @@ namespace Jubeat.Extra.IO.Test
     public class MemoMapReaderTests
     {
         [Fact]
-        public void MemoBeatTest()
+        public void BeatFormatterTest()
         {
-            Assert.NotNull(MemoBeat.Parse("|(197)－－①－②－|"));
-            Assert.Null(MemoBeat.Parse("口①②口"));
+            var input = "|(90)①－(95)②(100)－|";
+            var beat = MemoBeat.Parse(input.Trim('|'));
+            Assert.Equal(beat.ToString(), input);
         }
 
         [Fact]
-        public void ReadTest()
+        public void MeasureFormatterTest()
         {
-            Task.Run(async () =>
+            var input = new[]
             {
-                using (var sr = new StreamReader(new FileStream(@"D:\memo2.txt", FileMode.Open), Encoding.UTF8))
-                {
-                    var memo = await sr.ReadMemoMapAsync();
-                    Assert.NotNull(memo);
-                }
-            });
+                "□②①□	|①－－－|",
+                "□①②□	|②－－－|",
+                "⑦⑤⑥④	|③－－－|",
+                "□③③□	|④⑤⑥⑦|"
+            };
+
+            var measure = MemoMeasure.Parse(input);
+
+            Assert.Equal(measure.ToString(), measure.Ordinal + Environment.NewLine + string.Join(Environment.NewLine, input) + Environment.NewLine);
+        }
+
+        [Fact]
+        public void SceneFormatterTest()
+        {
+            var input = new[] { "③□□□", "⑤□□②", "□⑤⑥④", "①□□⑥" };
+            var scene = MemoScene.Parse(input);
+            Assert.Equal(scene.ToString(), string.Join(Environment.NewLine, input));
+        }
+
+        [Fact]
+        public async Task ReadMapTest()
+        {
+            using (var mr = new MemoMapReader(@"D:\memo2.txt"))
+            {
+                var map = await mr.ReadAllAsync();
+            }
         }
     }
 }

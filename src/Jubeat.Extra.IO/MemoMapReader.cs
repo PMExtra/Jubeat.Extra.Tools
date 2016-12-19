@@ -1,98 +1,100 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Jubeat.Extra.Models.Maps.Memo;
+using static Jubeat.Extra.Models.Maps.Memo.MemoDefinitions;
 
 namespace Jubeat.Extra.IO
 {
-    public static class MemoMapReader
+    public class MemoMapReader : IDisposable
     {
-        private static readonly Regex NumberRegex = new Regex(@"^\d+$");
-        private static readonly Regex MemoLineRegex = new Regex(@"^(.{4})[ \\t]*(.+)?$");
+        private readonly StreamReader _sr;
+        private bool _back;
 
-        public static async Task<MemoMap> ReadMemoMapAsync(this StreamReader sr)
+        private string _line;
+
+        public MemoMapReader(Stream stream)
         {
-            var map = new MemoMap { Measures = new List<MemoMeasure>() };
+            _sr = new StreamReader(stream, Encoding.UTF8);
+        }
 
-            MemoMeasure measure = null;
-            MemoMeasurePart part = null;
-            var newPart = true;
+        public MemoMapReader(string path) : this(new FileStream(path, FileMode.Open))
+        {
+        }
 
-            while (!sr.EndOfStream)
+        public bool EndOfStream => _sr.EndOfStream && !_back;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
+        private async Task<string> ReadLineAsync()
+        {
+            if (_back)
             {
-                var line = await sr.ReadLineAsync();
-                line = line.Trim();
+                _back = false;
+            }
+            else
+            {
+                _line = (await _sr.ReadLineAsync()).Trim();
+            }
+            return _line;
+        }
 
-                if (line.Length == 0)
-                {
-                    newPart = true;
-                    continue;
-                }
+        private void BackLine()
+        {
+            _back = true;
+        }
 
-                if (NumberRegex.IsMatch(line))
+        public void Rewind()
+        {
+            _sr.BaseStream.Position = 0;
+            _sr.DiscardBufferedData();
+        }
+
+        public async Task<MemoMap> ReadAllAsync()
+        {
+            Rewind();
+
+            var map = new MemoMap();
+            var lines = new List<Match>();
+            while (!EndOfStream)
+            {
+                var line = await ReadLineAsync();
+
+                var match = OrdinalRegex.Match(line);
+                if (match.Success)
                 {
-                    measure = new MemoMeasure
+                    if (lines.Count > 0)
                     {
-                        Parts = new List<MemoMeasurePart>(),
-                        Beats = new List<MemoBeat>()
-                    };
-
-                    map.Measures.Add(measure);
-
-                    newPart = true;
-
-                    continue;
-                }
-
-                if (newPart)
-                {
-                    part = new MemoMeasurePart();
-                    if (measure == null)
-                    {
-                        Console.WriteLine("[Error] Measure start number not found.");
-                        return null;
+                        var measure = MemoMeasure.Parse(lines);
+                        measure.Ordinal = map.Measures.Count + 1;
+                        map.Measures.Add(measure);
+                        lines.Clear();
                     }
-                    measure.Parts.Add(part);
-                    newPart = false;
-                }
-
-                var memoLine = MemoLineRegex.Match(line);
-                if (memoLine.Success)
-                {
-                    var left = memoLine.Groups[1].Value;
-                    var right = memoLine.Groups[2].Success ? memoLine.Groups[2].Value : null;
-
-                    part.AddButtons(left);
-
-                    if (right != null)
-                    {
-                        var beat = MemoBeat.Parse(right);
-
-                        if (beat != null)
-                        {
-                            if (measure.Beats.Count == 4)
-                            {
-                                Console.WriteLine("[Info] Detected more than 4 beats in measure, merge operation is triggered.");
-                                measure.Beats.Last().Merge(beat);
-                            }
-                            else
-                            {
-                                measure.Beats.Add(beat);
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine($"[Warning] Unrecognized right part: {right}.");
-                        }
-                    }
-
+                    var ordinal = int.Parse(match.Groups["ordinal"].Value);
+                    Debug.Assert(map.Measures.Count + 1 == ordinal);
                     continue;
                 }
 
-                Console.WriteLine($"[Warning] Unrecognized data: {line}.");
+                match = MemoLineRegex.Match(line);
+                if (match.Success)
+                {
+                    lines.Add(match);
+                    continue;
+                }
+
+                Debug.Assert(string.IsNullOrEmpty(line));
             }
 
             return map;
