@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using Jubeat.Extra.IO;
 
 namespace Jubeat.Extra.Memo2Eve
@@ -9,13 +7,41 @@ namespace Jubeat.Extra.Memo2Eve
     {
         public static void Main(string[] args)
         {
-            Task.Run(async () =>
+            using (var mr = new MemoMapReader(@"D:\memo2.txt"))
             {
-                using (var sr = new StreamReader(new FileStream(@"D:\memo.txt", FileMode.Open), Encoding.UTF8))
+                using (var sw = new StreamWriter(new FileStream(@"D:\2.eve", FileMode.Create)))
                 {
-                    var memo = await sr.ReadMemoMapAsync();
+                    var map = mr.ReadAllAsync().Result;
+
+                    var timestamp = 0;
+                    var bpm = 0;
+
+                    foreach (var measure in map.Measures)
+                    {
+                        foreach (var beat in measure.Beats)
+                        {
+                            for (var i = 0; i < beat.Hits.Count; i++)
+                            {
+                                if (beat.Bpm.ContainsKey(i))
+                                {
+                                    bpm = beat.Bpm[i];
+                                }
+
+                                var hit = beat.Hits[i];
+                                if (hit > 0)
+                                {
+                                    foreach (var button in measure.FindNote(hit))
+                                    {
+                                        sw.WriteLine($"PLAY {button} {timestamp}");
+                                    }
+                                }
+
+                                // timestamp += ...
+                            }
+                        }
+                    }
                 }
-            });
+            }
         }
     }
 }
