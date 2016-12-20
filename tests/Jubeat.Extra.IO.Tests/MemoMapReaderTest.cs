@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Jubeat.Extra.Models.Maps.Memo;
 using Xunit;
 
-namespace Jubeat.Extra.IO.Test
+namespace Jubeat.Extra.IO.Tests
 {
-    public class MemoMapReaderTests
+    public class MemoMapReaderTest
     {
         [Fact]
         public void BeatFormatterTest()
